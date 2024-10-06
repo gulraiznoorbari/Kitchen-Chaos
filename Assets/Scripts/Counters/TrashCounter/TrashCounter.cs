@@ -7,6 +7,11 @@ namespace KitchenChaos.Feature.Interaction
     {
         public static event EventHandler OnObjectTrashed;
         
+        public new static void ResetStaticData()
+        {
+            OnObjectTrashed = null;
+        }
+        
         public override void Interact(PlayerController playerController)
         {
             if (playerController.HasKitchenObject())

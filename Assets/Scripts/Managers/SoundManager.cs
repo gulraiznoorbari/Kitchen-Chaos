@@ -22,8 +22,8 @@ namespace KitchenChaos.Manager.Audio
         {
             DeliveryManager.Instance.OnRecipeSuccess += Sound_OnRecipeSuccess;
             DeliveryManager.Instance.OnRecipeFail += Sound_OnRecipeFail;
-            CuttingCounter.OnAnyCut += Sound_CuttingCounter;
             PlayerController.Instance.OnPickedSomething += Sound_PickedSomething;
+            CuttingCounter.OnAnyCut += Sound_CuttingCounter;
             BaseCounter.OnAnyObjectPlacedHere += Sound_AnyObjectPlacedHere;
             TrashCounter.OnObjectTrashed += Sound_ObjectInTrash;
         }

@@ -1,5 +1,5 @@
 using System;
-using KitchenChaos.Manager.Audio;
+using KitchenChaos.Feature.Input;
 using UnityEngine;
 
 namespace KitchenChaos.Manager.GameStates
@@ -11,11 +11,14 @@ namespace KitchenChaos.Manager.GameStates
             WaitingForStart,
             CountdownToStart,
             GamePlaying,
+            GamePause,
             GameOver
         }
         
         public static KitchenGameManager Instance { get; private set; }
         public event EventHandler<GameStateChangedEventArg> OnGameStateChanged;
+        public event EventHandler OnGamePaused;
+        public event EventHandler OnGameUnPaused;
         public class GameStateChangedEventArg : EventArgs
         {
             public GameStates gameState;
@@ -26,11 +29,22 @@ namespace KitchenChaos.Manager.GameStates
         private float countdownToStartTimer = 3f;
         private float gamePlayingTimer;
         private float gamePlayingTimerMax = 20f;
+        private bool isGamePaused = false;
 
         private void Awake()
         {
             Instance = this;
             _gameStates = GameStates.WaitingForStart;
+        }
+
+        private void Start()
+        {
+            GameInput.Instance.OnPauseAction += GameInput_OnPauseAction;
+        }
+
+        private void GameInput_OnPauseAction(object sender, EventArgs e)
+        {
+            TogglePauseGame();
         }
 
         private void Update()
@@ -70,7 +84,13 @@ namespace KitchenChaos.Manager.GameStates
                             gameState = _gameStates
                         });
                     }
-                    
+                    break;
+                case GameStates.GamePause:
+                    _gameStates = GameStates.GamePause;
+                    OnGameStateChanged?.Invoke(this, new GameStateChangedEventArg()
+                    {
+                        gameState = _gameStates
+                    });
                     break;
                 case GameStates.GameOver:
                     break;
@@ -100,6 +120,23 @@ namespace KitchenChaos.Manager.GameStates
         public float GetGameplayTimerNormalized()
         {
             return 1 - (gamePlayingTimer / gamePlayingTimerMax);
+        }
+
+        private void TogglePauseGame()
+        {
+            isGamePaused = !isGamePaused;
+            if (isGamePaused)
+            {
+                _gameStates = GameStates.GamePause;
+                OnGamePaused?.Invoke(this, EventArgs.Empty);
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                _gameStates = GameStates.GamePlaying;
+                OnGameUnPaused?.Invoke(this, EventArgs.Empty);
+                Time.timeScale = 1f;
+            }
         }
     }
 }

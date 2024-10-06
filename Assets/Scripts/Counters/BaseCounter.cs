@@ -11,6 +11,12 @@ namespace KitchenChaos.Feature.Interaction
 
         private KitchenObject _kitchenObject;
         
+        public static void ResetStaticData()
+        {
+            OnAnyObjectPlacedHere = null;
+        }
+
+        
         public virtual void Interact(PlayerController playerController)
         {
         }

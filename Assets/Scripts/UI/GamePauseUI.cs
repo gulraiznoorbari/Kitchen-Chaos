@@ -1,0 +1,58 @@
+using System;
+using KitchenChaos.Manager.GameStates;
+using KitchenChaos.UI.Utility;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace KitchenChaos.UI
+{
+    public class GamePauseUI : MonoBehaviour
+    {
+        [SerializeField] private Button _mainMenuButton;
+        [SerializeField] private AudioSource _gameTimerAudioSource;
+
+        private void OnEnable()
+        {
+            _mainMenuButton.onClick.AddListener(OnMainMenuButtonPress);
+        }
+
+        private void OnDisable()
+        {
+            _mainMenuButton.onClick.RemoveListener(OnMainMenuButtonPress);
+        }
+
+        private void Start()
+        {
+            KitchenGameManager.Instance.OnGamePaused += GamePauseUI_OnGamePause;
+            KitchenGameManager.Instance.OnGameUnPaused += GamePauseUI_OnGameUnPause;
+            Hide();
+        }
+
+        private void GamePauseUI_OnGamePause(object sender, EventArgs e)
+        {
+            Show();
+        }
+        
+        private void GamePauseUI_OnGameUnPause(object sender, EventArgs e)
+        {
+            Hide();
+            _gameTimerAudioSource.Play();
+        }
+
+        private void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        private void Hide()
+        {
+            gameObject.SetActive(false) ;
+        }
+        
+        private void OnMainMenuButtonPress()
+        {
+            Loader.Load(Loader.Scene.MainMenu);
+        }
+    }
+}
+

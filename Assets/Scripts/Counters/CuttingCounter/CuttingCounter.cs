@@ -12,7 +12,12 @@ public class CuttingCounter : BaseCounter, IProgressBar
 
     public event EventHandler<IProgressBar.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler OnCut;
-    public static event EventHandler OnAnyCut; 
+    public static event EventHandler OnAnyCut;
+
+    public new static void ResetStaticData()
+    {
+        OnAnyCut = null;
+    }
 
     public override void Interact(PlayerController player)
     {

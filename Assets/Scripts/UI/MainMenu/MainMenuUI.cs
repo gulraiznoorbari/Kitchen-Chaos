@@ -1,3 +1,4 @@
+using System;
 using KitchenChaos.UI.Utility;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,6 +21,11 @@ namespace KitchenChaos.UI.MainMenu
         {
             _playButton.onClick.RemoveListener(OnPlayButtonPress);
             _quitButton.onClick.RemoveListener(OnQuitButtonPress);
+        }
+
+        private void Awake()
+        {
+            Time.timeScale = 1f;
         }
 
         private void OnPlayButtonPress()
