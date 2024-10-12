@@ -11,11 +11,15 @@ namespace KitchenChaos.Manager.Audio
     public class SoundManager : MonoBehaviour
     {
         public static SoundManager Instance { get; private set; }
+        
         [SerializeField] private AudioClipSO _audioClipSO;
+        private float _volume = 0.1f;
+        private const string SOUND_EFFECTS_VOLUME = "SoundEffectsVolume";
 
         private void Awake()
         {
             Instance = this;
+            _volume = PlayerPrefs.GetFloat(SOUND_EFFECTS_VOLUME, 1f);
         }
 
         private void Start()
@@ -68,14 +72,30 @@ namespace KitchenChaos.Manager.Audio
             PlaySound(audioClips[Random.Range(0, audioClips.Length)], position, volume);
         }
 
-        private void PlaySound(AudioClip audioClip, Vector3 position, float volume = 1.0f)
+        private void PlaySound(AudioClip audioClip, Vector3 position, float volumeMultiplier = 1.0f)
         {
-            AudioSource.PlayClipAtPoint(audioClip, position, volume);
+            AudioSource.PlayClipAtPoint(audioClip, position, volumeMultiplier * _volume);
         }
 
         public void PlayFootstepSound(Vector3 position, float volume)
         {
             PlayRandomSound(_audioClipSO.footstep, position, volume);
+        }
+
+        public void ChangeVolume()
+        {
+            _volume += 0.1f;
+            if (_volume > 1f)
+            {
+                _volume = 0f;
+            }
+            PlayerPrefs.SetFloat(SOUND_EFFECTS_VOLUME, _volume);
+            PlayerPrefs.Save();
+        }
+
+        public float GetVolume()
+        {
+            return _volume;
         }
     }
 }
